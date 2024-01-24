@@ -40,8 +40,7 @@ public class MainActivity extends Activity {
 
 
 
-        // create the AidcManager providing a Context and a
-        // CreatedCallback implementation.
+
         AidcManager.create(this, new CreatedCallback() {
 
             @Override
