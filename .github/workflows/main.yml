@@ -50,10 +50,10 @@ jobs:
           - name: Checkout Repository
             uses: actions/checkout@v2
 
-          - name: Download Debug APK
+          - name: Download ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
             uses: actions/download-artifact@v2
             with:
-              name: debug-apk
+              name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
 
           - name: Send Email
             run: |
