@@ -33,6 +33,9 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
         offBtn=findViewById(R.id.offBtn);
         onBtn=findViewById(R.id.onBtn);
 
+
+
+
         if(Build.MODEL.startsWith("VM1A")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
