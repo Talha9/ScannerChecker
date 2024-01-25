@@ -42,3 +42,26 @@ jobs:
         with:
           name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
           path: app/build/outputs/apk/debug/
+          
+  email:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout Repository
+            uses: actions/checkout@v2
+
+          - name: Download Debug APK
+            uses: actions/download-artifact@v2
+            with:
+              name: debug-apk
+
+          - name: Send Email
+            run: |
+              # Use a script or command to send an email with the APK attachment
+              # This may involve using a tool like 'mailx' or 'mutt' and providing SMTP details
+            env:
+              SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+              SMTP_PORT: ${{ secrets.SMTP_PORT }}
+              SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+              SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+              TO_EMAIL: stalha872@gmail.com
