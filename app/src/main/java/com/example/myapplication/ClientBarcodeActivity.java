@@ -31,6 +31,8 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
         setContentView(R.layout.activity_barcode);
 
         offBtn=findViewById(R.id.offBtn);
+
+
         onBtn=findViewById(R.id.onBtn);
 
 
