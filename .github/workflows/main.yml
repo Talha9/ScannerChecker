@@ -57,4 +57,4 @@ jobs:
       - name: Send Email
         run: |
           echo "Sending email with APK attachment..."
-          echo "See attached APK" | mutt -s "Debug APK" -a app/build/outputs/apk/debug/*.apk -- stalha872@gmail.com.com
+          echo "See attached APK" | mutt -s "Debug APK" -a app/build/outputs/apk/debug/debug-apk.apk -- stalha872@gmail.com.com
