@@ -44,25 +44,24 @@ jobs:
           path: app/build/outputs/apk/debug/
           
   email:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout Repository
-            uses: actions/checkout@v2
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-          - name: Download ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
-            uses: actions/download-artifact@v2
-            with:
-              name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
+      - name: Download Debug APK
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
 
-          - name: Send Email
-            run: |
-              # Use a script or command to send an email with the APK attachment
-              # This may involve using a tool like 'mailx' or 'mutt' and providing SMTP details
-            env:
-              SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-              SMTP_PORT: ${{ secrets.SMTP_PORT }}
-              SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-              SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-              TO_EMAIL: stalha872@gmail.com
+      - name: Send Email
+        run: |
+          echo "Sending email with APK attachment..."
+          mailx -s "Debug APK" -a app/build/outputs/apk/debug/*.apk -S smtp="smtp://your-smtp-server:your-smtp-port" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user=your-smtp-username -S smtp-auth-password=your-smtp-password recipient@example.com
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
 
