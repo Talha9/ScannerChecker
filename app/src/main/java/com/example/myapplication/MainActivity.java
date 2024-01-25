@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
         else{
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-//asdasdasd
+
 
 
 
