@@ -51,6 +51,10 @@ public class ScannerSelectionBarcodeActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection_barcode);
 
+
+
+
+
         if(Build.MODEL.startsWith("VM1A")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
