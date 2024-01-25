@@ -51,12 +51,10 @@ jobs:
         with:
           name: debug-apk
 
+      - name: Install Mutt
+        run: sudo apt-get install -y mutt
+
       - name: Send Email
         run: |
           echo "Sending email with APK attachment..."
-          mailx -s "Debug APK" -a app/build/outputs/apk/debug/*.apk -S smtp="smtp://your-smtp-server:your-smtp-port" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user=your-smtp-username -S smtp-auth-password=your-smtp-password recipient@example.com
-        env:
-          SMTP_SERVER: smtp.gmail.com
-          SMTP_PORT: 465
-          SMTP_USERNAME: stalha872@gmail.com
-          SMTP_PASSWORD: Ta99lha.s
+          echo "See attached APK" | mutt -s "Debug APK" -a app/build/outputs/apk/debug/*.apk -- stalha872@gmail.com.com
