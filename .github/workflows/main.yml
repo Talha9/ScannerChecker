@@ -1,7 +1,6 @@
 name: Android CI
 
 on:
-
   pull_request:
     branches: [ "master" ]
 
@@ -12,10 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # Set Current Date As Env Variable
       - name: Set current date as env variable
         run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-      # Set Repository Name As Env Variable
       - name: Set repository name as env variable
         run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
 
@@ -35,14 +32,13 @@ jobs:
         run: ./gradlew assembleDebug
       - name: Ensure Folder Structure
         run: mkdir -p build/outputs/apk/debug/
-        # Upload Artifact Build
-        # Noted For Output [main_project_module]/build/outputs/apk/debug/
+
       - name: Upload APK Debug - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
+          name: debug-apk
           path: app/build/outputs/apk/debug/
-          
+
   email:
     needs: build
     runs-on: ubuntu-latest
@@ -53,7 +49,7 @@ jobs:
       - name: Download Debug APK
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
+          name: debug-apk
 
       - name: Send Email
         run: |
@@ -64,4 +60,3 @@ jobs:
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-
