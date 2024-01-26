@@ -163,8 +163,6 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
             // release the scanner claim so we don't get any scanner
             // notifications while paused.
             barcodeReader.release();
-
-
         }
     }
 

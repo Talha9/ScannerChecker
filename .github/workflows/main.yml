@@ -38,18 +38,8 @@ jobs:
           name: debug-apk
           path: app/build/outputs/apk/debug/
 
-      - name: Get Download URL
-        id: download
-        run: |
-          artifacts_url="https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
-          response=$(curl -sL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $artifacts_url)
-          download_url=$(echo "$response" | jq -r '.artifacts | if length > 0 then .[0].archive_download_url else empty end')
-          echo "Download URL: $download_url"
-          if [ -z "$download_url" ]; then
-            echo "No artifacts found."
-            exit 1
-          fi
-          echo "::set-output name=url::$download_url"
+      - name: Create ZIP file
+        run: zip -r debug-apk.zip app/build/outputs/apk/debug/
 
       - name: Notify Teams Channel
         if: success()
@@ -68,13 +58,17 @@ jobs:
                   {
                     "name": "Date",
                     "value": "${{ env.date_today }}"
-                  },
-                  {
-                    "name": "Download Link",
-                    "value": "[Download APK](${{ steps.download.outputs.url }})"
                   }
                 ]
               }
+            ],
+            "attachments": [
+              {
+                "contentType": "application/zip",
+                "contentUrl": "data:application/zip;base64,$(base64 -w 0 debug-apk.zip)",
+                "name": "debug-apk.zip"
+              }
+
             ]
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
         env:
