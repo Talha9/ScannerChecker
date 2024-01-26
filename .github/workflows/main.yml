@@ -41,7 +41,10 @@ jobs:
       - name: Get Artifact Download URL
         id: artifact-url
         run: |
-          echo "::set-output name=url::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \"https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts\" | jq -r '.artifacts[0].archive_download_url')"
+          ARTIFACT_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" | jq -r '.artifacts[0].id')
+          ARTIFACT_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${ARTIFACT_ID}/zip" | jq -r '.url')
+          ARTIFACT_DOWNLOAD_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL" | jq -r '.archive_download_url')
+          echo "::set-output name=url::$ARTIFACT_DOWNLOAD_URL"
 
       - name: Notify Teams Channel
         if: success()
