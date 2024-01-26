@@ -119,6 +119,7 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
                 final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
                         AutomaticBarcodeActivity.this, android.R.layout.simple_list_item_1, list);
 
+
                 barcodeList.setAdapter(dataAdapter);
             }
         });
