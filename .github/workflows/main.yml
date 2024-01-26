@@ -68,6 +68,7 @@ jobs:
                 "contentUrl": "data:application/zip;base64,$(base64 -w 0 debug-apk.zip)",
                 "name": "debug-apk.zip"
               }
+
             ]
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
         env:
