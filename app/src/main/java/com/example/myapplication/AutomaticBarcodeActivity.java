@@ -151,6 +151,9 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
                 Toast.makeText(this, "Scanner unavailable", Toast.LENGTH_SHORT).show();
             }
         }
+
+
+
     }
 
     @Override
