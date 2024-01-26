@@ -43,9 +43,6 @@ public class ScannerSelectionBarcodeActivity extends Activity implements
     private ListView barcodeList;
     private boolean mResume = false;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
