@@ -175,6 +175,10 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
             // unregister barcode event listener
             barcodeReader.removeBarcodeListener(this);
 
+
+
+
+
             // unregister trigger state change listener
             barcodeReader.removeTriggerListener(this);
         }
