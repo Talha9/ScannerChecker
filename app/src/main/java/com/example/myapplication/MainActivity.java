@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
+
         });
 
         ActivitySetting();

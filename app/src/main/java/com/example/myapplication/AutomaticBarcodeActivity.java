@@ -115,10 +115,6 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
                 // update UI to reflect the data
                 List<String> list = new ArrayList<String>();
                 list.add("Barcode data: " + event.getBarcodeData());
-                list.add("Character Set: " + event.getCharset());
-                list.add("Code ID: " + event.getCodeId());
-                list.add("AIM ID: " + event.getAimId());
-                list.add("Timestamp: " + event.getTimestamp());
 
                 final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
                         AutomaticBarcodeActivity.this, android.R.layout.simple_list_item_1, list);
