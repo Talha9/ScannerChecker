@@ -38,6 +38,10 @@ jobs:
           name: debug-apk
           path: app/build/outputs/apk/debug/
 
+      - name: Generate Download Link
+        id: download-link
+        run: echo "::set-output name=link::$(gh release create ${{ env.date_today }} -t ${{ env.date_today }} -n 'Release Details' -F release-notes.md app/build/outputs/apk/debug/*.apk -R ${{ github.repository }} | grep -oP '(?<=- )(.+)(?=.apk)' | sed 's/\s*$//')"
+
       - name: Notify Teams Channel
         if: success()
         run: |
@@ -55,10 +59,14 @@ jobs:
                   {
                     "name": "Date",
                     "value": "${{ env.date_today }}"
+                  },
+                  {
+                    "name": "Download Link",
+                    "value": "[Download APK](${{ steps.download-link.outputs.link }})"
                   }
                 ]
               }
             ]
-          }'  ${{ secrets.TEAMS_WEBHOOK_URL }}  
+          }' ${{ secrets.TEAMS_WEBHOOK_URL }}
         env:
-           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
