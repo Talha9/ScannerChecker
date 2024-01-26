@@ -59,6 +59,6 @@ jobs:
                 ]
               }
             ]
-          }'  ${{ https://kipslms.webhook.office.com/webhookb2/1b41b364-6131-4c65-9f43-4a35b88700de@9bf0b042-aa16-41a5-a315-225366fd279a/IncomingWebhook/251a9c57731e4ca4ac0cbeb80eddc646/5807262f-7a42-47a1-a4f4-7a6bb1da4966 }}  
+          }'  ${{ secrets.TEAMS_WEBHOOK_URL }}  
         env:
-          ${{ https://kipslms.webhook.office.com/webhookb2/1b41b364-6131-4c65-9f43-4a35b88700de@9bf0b042-aa16-41a5-a315-225366fd279a/IncomingWebhook/251a9c57731e4ca4ac0cbeb80eddc646/5807262f-7a42-47a1-a4f4-7a6bb1da4966 }}
+           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
