@@ -38,6 +38,13 @@ jobs:
           name: debug-apk
           path: app/build/outputs/apk/debug/
 
+      - name: Get Download URL
+        id: download
+        run: |
+          download_url=$(curl -sL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | jq -r '.artifacts[0].archive_download_url')
+          echo "Download URL: $download_url"
+          echo "::set-output name=url::$download_url"
+
       - name: Notify Teams Channel
         if: success()
         run: |
@@ -55,23 +62,12 @@ jobs:
                   {
                     "name": "Date",
                     "value": "${{ env.date_today }}"
+                  },
+                  {
+                    "name": "Download Link",
+                    "value": "[Download APK](${{ steps.download.outputs.url }})"
                   }
                 ]
-              }
-            ]
-          }' ${{ secrets.TEAMS_WEBHOOK_URL }}
-
-          # Get the download URL of the artifact
-          download_url=$(curl -sL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | jq -r '.artifacts[0].archive_download_url')
-
-          # Add the APK as an attachment
-          curl -X POST -H 'Content-Type: application/json' -d '{
-            "type": "message",
-            "attachments": [
-              {
-                "contentType": "application/vnd.android.package-archive",
-                "contentUrl": "'"$download_url"'",
-                "name": "YourAppName.apk"
               }
             ]
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
