@@ -38,6 +38,10 @@ jobs:
           name: debug-apk
           path: app/build/outputs/apk/debug/
 
+      - name: Get Artifact Download URL
+        id: artifact-url
+        run: echo "::set-output name=url::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" | jq -r '.artifacts[0].archive_download_url')"
+
       - name: Notify Teams Channel
         if: success()
         run: |
@@ -63,8 +67,8 @@ jobs:
               {
                 "@context": "http://schema.org",
                 "@type": "ViewAction",
-                "name": "View Artifact",
-                "target": ["${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"]
+                "name": "Download Artifact",
+                "target": ["${{ steps.artifact-url.outputs.url }}"]
               }
             ]
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
