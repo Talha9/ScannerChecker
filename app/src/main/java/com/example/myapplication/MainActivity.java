@@ -58,6 +58,10 @@ public class MainActivity extends Activity {
             }
         });
 
+
+
+
+
         ActivitySetting();
     }
 
