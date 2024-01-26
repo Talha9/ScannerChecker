@@ -101,7 +101,6 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
             });
         }
 
-        // get initial list
         barcodeList = (ListView) findViewById(R.id.listViewBarcodeData);
 
 
