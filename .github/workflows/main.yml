@@ -1,21 +1,17 @@
 name: Android CI
 
 on:
-
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      # Set Current Date As Env Variable
       - name: Set current date as env variable
         run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-      # Set Repository Name As Env Variable
       - name: Set repository name as env variable
         run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
 
@@ -35,34 +31,44 @@ jobs:
         run: ./gradlew assembleDebug
       - name: Ensure Folder Structure
         run: mkdir -p build/outputs/apk/debug/
-        # Upload Artifact Build
-        # Noted For Output [main_project_module]/build/outputs/apk/debug/
+
       - name: Upload APK Debug - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
+          name: debug-apk
           path: app/build/outputs/apk/debug/
-          
-  email:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout Repository
-            uses: actions/checkout@v2
 
-          - name: Download Debug APK
-            uses: actions/download-artifact@v2
-            with:
-              name: debug-apk
+      - name: Create ZIP file
+        run: zip -r debug-apk.zip app/build/outputs/apk/debug/
 
-          - name: Send Email
-            run: |
-              # Use a script or command to send an email with the APK attachment
-              # This may involve using a tool like 'mailx' or 'mutt' and providing SMTP details
-            env:
-              SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-              SMTP_PORT: ${{ secrets.SMTP_PORT }}
-              SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-              SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-              TO_EMAIL: stalha872@gmail.com
-
+      - name: Notify Teams Channel
+        if: success()
+        run: |
+          echo "Sending release notification to Teams channel..."
+          curl -X POST -H 'Content-Type: application/json' -d '{
+            "text": "New release available: ${{ env.date_today }} - ${{ env.repository_name }}",
+            "sections": [
+              {
+                "activityTitle": "Release Details",
+                "facts": [
+                  {
+                    "name": "Repository",
+                    "value": "${{ env.repository_name }}"
+                  },
+                  {
+                    "name": "Date",
+                    "value": "${{ env.date_today }}"
+                  }
+                ]
+              }
+            ],
+            "attachments": [
+              {
+                "contentType": "application/zip",
+                "contentUrl": "data:application/zip;base64,$(base64 -w 0 debug-apk.zip)",
+                "name": "debug-apk.zip"
+              }
+            ]
+          }' ${{ secrets.TEAMS_WEBHOOK_URL }}
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
