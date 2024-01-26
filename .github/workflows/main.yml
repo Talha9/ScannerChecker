@@ -38,9 +38,6 @@ jobs:
           name: debug-apk
           path: app/build/outputs/apk/debug/
 
-      - name: Create ZIP file
-        run: zip -r debug-apk.zip app/build/outputs/apk/debug/
-
       - name: Notify Teams Channel
         if: success()
         run: |
@@ -62,13 +59,13 @@ jobs:
                 ]
               }
             ],
-            "attachments": [
+            "potentialAction": [
               {
-                "contentType": "application/zip",
-                "contentUrl": "data:application/zip;base64,$(base64 -w 0 debug-apk.zip)",
-                "name": "debug-apk.zip"
+                "@context": "http://schema.org",
+                "@type": "ViewAction",
+                "name": "View Artifact",
+                "target": ["${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"]
               }
-
             ]
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
         env:
