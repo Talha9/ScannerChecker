@@ -131,11 +131,13 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
     // onTriggerEvent function
     @Override
     public void onTriggerEvent(TriggerStateChangeEvent event) {
+
     }
 
     @Override
     public void onFailureEvent(BarcodeFailureEvent arg0) {
-        // TODO Auto-generated method stub
+
+
     }
 
     @Override
