@@ -31,31 +31,20 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: List files in output directory (for debugging)
-        run: ls -la app/build/outputs/apk/debug/  # Use this to verify APK presence
+        run: ls -la app/build/outputs/apk/debug/
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v3
         with:
           name: debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk  # Ensure correct path
+          path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Get artifact download URL (with error handling)
-        id: artifact-url
-        run: |
-          set +e
-          ARTIFACT_URL=$(jq -r '.artifacts[0].archive_download_url' < "${GITHUB_EVENT_PATH}")
-          if [[ -z $ARTIFACT_URL ]]; then
-            echo "Error: Artifact download URL not found."
-            exit 1
-          fi
-          echo "::set-output name=apk_download_url::$ARTIFACT_URL"
-
-      - name: Notify Teams Channel (with direct download link)
+      - name: Notify Teams Channel (with manual download URL)
         if: success()
         run: |
           echo "Sending release notification to Teams channel..."
           curl -X POST -H 'Content-Type: application/json' -d '{
-            "text": "New release available: ${{ env.date_today }} - ${{ env.repository_name }}",
+            "text": "New release available: ${{ env.date_today }} - ${{ env.repository_name }} (Download manually from GitHub Actions UI)",
             "sections": [
               {
                 "activityTitle": "Release Details",
@@ -69,14 +58,6 @@ jobs:
                     "value": "${{ env.date_today }}"
                   }
                 ]
-              }
-            ],
-            "potentialAction": [
-              {
-                "@context": "http://schema.org",
-                "@type": "ViewAction",
-                "name": "Download APK",
-                "target": ["${{ steps.artifact-url.outputs.apk_download_url }}"]
               }
             ]
           }' ${{ secrets.TEAMS_WEBHOOK_URL }}
