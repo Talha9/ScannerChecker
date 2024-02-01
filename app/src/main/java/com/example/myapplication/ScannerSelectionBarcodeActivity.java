@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-import android.content.pm.ActivityInfo;
 
 import com.honeywell.aidc.*;
 import com.honeywell.aidc.AidcManager.BarcodeDeviceListener;
@@ -43,13 +43,11 @@ public class ScannerSelectionBarcodeActivity extends Activity implements
     private ListView barcodeList;
     private boolean mResume = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection_barcode);
-
-
-
 
 
 

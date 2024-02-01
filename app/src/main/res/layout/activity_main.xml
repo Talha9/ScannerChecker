@@ -1,8 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity">
 
      <TextView
          android:id="@+id/btnBarcode"
@@ -11,41 +12,50 @@
          android:background="#5C8A8A"
          android:gravity="left"
          android:padding="6dp"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
          android:text="@string/txtMainTitle"
          android:textColor="#FFFFFF"
          android:textSize="13sp" >
 
     </TextView>
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_alignParentLeft="true"
-          android:layout_alignParentTop="true"
-          android:layout_marginTop="40dp"
-          android:orientation="vertical" >
+    <FrameLayout
+        android:id="@+id/fragHost"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBarcode" />
 
-          <Button
-              android:id="@+id/buttonAutomaticBarcode"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="22dp"
-              android:text="@string/btnAutomaticBarcode" />
 
-          <Button
-              android:id="@+id/buttonClientBarcode"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="22dp"
-              android:text="@string/btnClientBarcode" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragHost">
 
-          <Button
-              android:id="@+id/buttonScannerSelectBarcode"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="22dp"
-              android:text="@string/btnScannerSelectBarcode" />
+        <Button
+            android:id="@+id/buttonAutomaticBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/btnAutomaticBarcode" />
 
-      </LinearLayout>
+        <Button
+            android:id="@+id/buttonClientBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/btnClientBarcode" />
 
-</RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
