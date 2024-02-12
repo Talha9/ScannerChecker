@@ -41,7 +41,7 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
         }
 
         // get bar code instance from MainActivity
-        barcodeReader = MainActivity.getBarcodeObject();
+        barcodeReader = SplashActivity.getBarcodeObject();
 
         if (barcodeReader != null) {
 
@@ -51,7 +51,7 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
             // set the trigger mode to client control
             try {
                 barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                        BarcodeReader.TRIGGER_CONTROL_MODE_CLIENT_CONTROL);
+                        BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
 
             } catch (UnsupportedPropertyException e) {
                 Toast.makeText(this, "Failed to apply properties", Toast.LENGTH_SHORT).show();
@@ -85,16 +85,16 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
 
             offBtn.setOnClickListener(view -> {
                 try {
-                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                            BarcodeReader.TRIGGER_CONTROL_MODE_DISABLE);
+                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_ENABLE,
+                            false);
                 } catch (UnsupportedPropertyException e) {
                     throw new RuntimeException(e);
                 }
             });
             onBtn.setOnClickListener(view -> {
                 try {
-                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                            BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
+                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_ENABLE,
+                          true);
                 } catch (UnsupportedPropertyException e) {
                     throw new RuntimeException(e);
                 }

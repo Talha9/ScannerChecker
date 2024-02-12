@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
@@ -8,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.ActivityInfo;
 
@@ -25,13 +27,12 @@ import com.honeywell.aidc.InvalidScannerNameException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static BarcodeReader barcodeReader;
-    private AidcManager manager;
-
+    private TextView deviceInfoTxt;
     private Button btnAutomaticBarcode;
     private Button btnClientBarcode;
     private Button btnScannerSelectBarcode;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,22 +44,27 @@ public class MainActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
+        deviceInfoTxt = (TextView) findViewById(R.id.deviceIdInfo);
+        String str = "";
+        str = "SERIAL: " + Build.SERIAL + "\n"
+                + "MODEL: " + Build.MODEL + "\n"
+                + "ID: " + Build.ID + "\n"
+                + "Manufacture: " + Build.MANUFACTURER + "\n"
+                + "brand: " + Build.BRAND + "\n"
+                + "type: " + Build.TYPE + "\n"
+                + "user: " + Build.USER + "\n"
+                + "BASE: " + Build.VERSION_CODES.BASE + "\n"
+                + "INCREMENTAL " + Build.VERSION.INCREMENTAL + "\n"
+                + "SDK  " + Build.VERSION.SDK + "\n"
+                + "BOARD: " + Build.BOARD + "\n"
+                + "BRAND " + Build.BRAND + "\n"
+                + "HOST " + Build.HOST + "\n"
+                + "FINGERPRINT: " + Build.FINGERPRINT + "\n"
+                + "Version Code: " + Build.VERSION.RELEASE;
+        deviceInfoTxt.setText(str);
 
-        AidcManager.create(this, new CreatedCallback() {
 
-            @Override
-            public void onCreated(AidcManager aidcManager) {
-                manager = aidcManager;
-                try {
-                    barcodeReader = manager.createBarcodeReader();
-                } catch (InvalidScannerNameException e) {
-                    Toast.makeText(MainActivity.this, "Invalid Scanner Name Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    Toast.makeText(MainActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
 
-        });
 
         ActivitySetting();
     }
@@ -71,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    static BarcodeReader getBarcodeObject() {
-        return barcodeReader;
-    }
+
 
     /**
      * Create buttons to launch demo activities.
@@ -99,25 +103,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addFragment(android.R.id.content, new AutomaticBarcodeFragment(), AutomaticBarcodeFragment.FRAGMENT_TAG);
+          addFragment(android.R.id.content, new AutomaticBarcodeFragment(), AutomaticBarcodeFragment.FRAGMENT_TAG);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (barcodeReader != null) {
-            // close BarcodeReader to clean up resources.
-            barcodeReader.close();
-            barcodeReader = null;
-        }
-
-        if (manager != null) {
-            // close AidcManager to disconnect from the scanner service.
-            // once closed, the object can no longer be used.
-            manager.close();
-        }
-    }
 
 
     protected void addFragment(@IdRes int containerViewId,

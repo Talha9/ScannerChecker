@@ -58,7 +58,7 @@ public class AutomaticBarcodeFragment extends Fragment implements BarcodeReader.
         }
 
         // get bar code instance from MainActivity
-        barcodeReader = MainActivity.getBarcodeObject();
+        barcodeReader = SplashActivity.getBarcodeObject();
 
         if (barcodeReader != null) {
 
