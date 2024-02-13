@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
@@ -8,8 +9,15 @@ import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.ActivityInfo;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.honeywell.aidc.AidcManager;
@@ -17,52 +25,49 @@ import com.honeywell.aidc.AidcManager.CreatedCallback;
 import com.honeywell.aidc.BarcodeReader;
 import com.honeywell.aidc.InvalidScannerNameException;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
-    private static BarcodeReader barcodeReader;
-    private AidcManager manager;
-
+    private TextView deviceInfoTxt;
     private Button btnAutomaticBarcode;
     private Button btnClientBarcode;
     private Button btnScannerSelectBarcode;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(Build.MODEL.startsWith("VM1A")) {
+        if (Build.MODEL.startsWith("VM1A")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-        else{
+        } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
+        deviceInfoTxt = (TextView) findViewById(R.id.deviceIdInfo);
+        String str = "";
+        str = "SERIAL: " + Build.SERIAL + "\n"
+                + "MODEL: " + Build.MODEL + "\n"
+                + "ID: " + Build.ID + "\n"
+                + "Manufacture: " + Build.MANUFACTURER + "\n"
+                + "brand: " + Build.BRAND + "\n"
+                + "type: " + Build.TYPE + "\n"
+                + "user: " + Build.USER + "\n"
+                + "BASE: " + Build.VERSION_CODES.BASE + "\n"
+                + "INCREMENTAL " + Build.VERSION.INCREMENTAL + "\n"
+                + "SDK  " + Build.VERSION.SDK + "\n"
+                + "BOARD: " + Build.BOARD + "\n"
+                + "BRAND " + Build.BRAND + "\n"
+                + "HOST " + Build.HOST + "\n"
+                + "FINGERPRINT: " + Build.FINGERPRINT + "\n"
+                + "Version Code: " + Build.VERSION.RELEASE;
+        deviceInfoTxt.setText(str);
 
 
 
-        AidcManager.create(this, new CreatedCallback() {
-
-            @Override
-            public void onCreated(AidcManager aidcManager) {
-                manager = aidcManager;
-                try{
-                    barcodeReader = manager.createBarcodeReader();
-                }
-                catch (InvalidScannerNameException e){
-                    Toast.makeText(MainActivity.this, "Invalid Scanner Name Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                catch (Exception e){
-                    Toast.makeText(MainActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
 
         ActivitySetting();
     }
-
-
 
 
     @Override
@@ -72,9 +77,7 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    static BarcodeReader getBarcodeObject() {
-        return barcodeReader;
-    }
+
 
     /**
      * Create buttons to launch demo activities.
@@ -100,33 +103,30 @@ public class MainActivity extends Activity {
             }
         });
 
-        btnScannerSelectBarcode = (Button) findViewById(R.id.buttonScannerSelectBarcode);
-        btnScannerSelectBarcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // get the intent action string from AndroidManifest.xml
-                Intent barcodeIntent = new Intent(
-                        "android.intent.action.SCANNERSELECTBARCODEACTIVITY");
-                startActivity(barcodeIntent);
-            }
-        });
+          addFragment(android.R.id.content, new AutomaticBarcodeFragment(), AutomaticBarcodeFragment.FRAGMENT_TAG);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-        if (barcodeReader != null) {
-            // close BarcodeReader to clean up resources.
-            barcodeReader.close();
-            barcodeReader = null;
-        }
 
-        if (manager != null) {
-            // close AidcManager to disconnect from the scanner service.
-            // once closed, the object can no longer be used.
-            manager.close();
-        }
+    protected void addFragment(@IdRes int containerViewId,
+                               @NonNull Fragment fragment,
+                               @NonNull String fragmentTag) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(containerViewId, fragment, fragmentTag)
+                .disallowAddToBackStack()
+                .commit();
+    }
+
+    protected void replaceFragment(@IdRes int containerViewId,
+                                   @NonNull Fragment fragment,
+                                   @NonNull String fragmentTag,
+                                   @Nullable String backStackStateName) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(containerViewId, fragment, fragmentTag)
+                .addToBackStack(backStackStateName)
+                .commit();
     }
 
 }

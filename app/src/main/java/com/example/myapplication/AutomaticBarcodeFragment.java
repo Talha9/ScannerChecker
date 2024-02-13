@@ -1,43 +1,60 @@
 package com.example.myapplication;
 
+import android.content.pm.ActivityInfo;
+import android.os.Build;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.honeywell.aidc.BarcodeFailureEvent;
+import com.honeywell.aidc.BarcodeReadEvent;
+import com.honeywell.aidc.BarcodeReader;
+import com.honeywell.aidc.ScannerUnavailableException;
+import com.honeywell.aidc.TriggerStateChangeEvent;
+import com.honeywell.aidc.UnsupportedPropertyException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.content.pm.ActivityInfo;
-
-import com.honeywell.aidc.*;
-
-public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.BarcodeListener,
-        BarcodeReader.TriggerListener {
-
+public class AutomaticBarcodeFragment extends Fragment implements BarcodeReader.BarcodeListener,
+        BarcodeReader.TriggerListener  {
     private BarcodeReader barcodeReader;
     private ListView barcodeList;
     Button offBtn, onBtn;
 
+    static String FRAGMENT_TAG="AUTO";
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_automatic_barcode, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
 
-        offBtn = findViewById(R.id.offBtn);
-        onBtn = findViewById(R.id.onBtn);
+        offBtn = view.findViewById(R.id.offBtn);
+        onBtn = view.findViewById(R.id.onBtn);
 
         if (Build.MODEL.startsWith("VM1A")) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         // get bar code instance from MainActivity
@@ -51,10 +68,10 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
             // set the trigger mode to client control
             try {
                 barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                        BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
+                        BarcodeReader.TRIGGER_CONTROL_MODE_CLIENT_CONTROL);
 
             } catch (UnsupportedPropertyException e) {
-                Toast.makeText(this, "Failed to apply properties", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to apply properties", Toast.LENGTH_SHORT).show();
             }
             // register trigger state change listener
             barcodeReader.addTriggerListener(this);
@@ -83,40 +100,40 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
             // Apply the settings
             barcodeReader.setProperties(properties);
 
-            offBtn.setOnClickListener(view -> {
+            offBtn.setOnClickListener(view1 -> {
                 try {
-                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_ENABLE,
-                            false);
+                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
+                            BarcodeReader.TRIGGER_CONTROL_MODE_DISABLE);
                 } catch (UnsupportedPropertyException e) {
                     throw new RuntimeException(e);
                 }
             });
-            onBtn.setOnClickListener(view -> {
+            onBtn.setOnClickListener(view2 -> {
                 try {
-                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_ENABLE,
-                          true);
+                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
+                            BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
                 } catch (UnsupportedPropertyException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
 
-        barcodeList = (ListView) findViewById(R.id.listViewBarcodeData);
+        barcodeList = (ListView) view.findViewById(R.id.listViewBarcodeData);
 
 
     }
 
     @Override
-    public void onBarcodeEvent(final BarcodeReadEvent event) {
-        runOnUiThread(new Runnable() {
+    public void onBarcodeEvent(BarcodeReadEvent barcodeReadEvent) {
+        requireActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // update UI to reflect the data
                 List<String> list = new ArrayList<String>();
-                list.add("Barcode data: " + event.getBarcodeData());
+                list.add("Barcode data: " + barcodeReadEvent.getBarcodeData());
 
                 final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
-                        AutomaticBarcodeActivity.this, android.R.layout.simple_list_item_1, list);
+                        requireContext(), android.R.layout.simple_list_item_1, list);
 
 
                 barcodeList.setAdapter(dataAdapter);
@@ -124,20 +141,16 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
         });
     }
 
-    // When using Automatic Trigger control do not need to implement the
-    // onTriggerEvent function
-    // When using Automatic Trigger control do not need to implement the
-    // onTriggerEvent function
     @Override
-    public void onTriggerEvent(TriggerStateChangeEvent event) {
+    public void onFailureEvent(BarcodeFailureEvent barcodeFailureEvent) {
 
     }
 
     @Override
-    public void onFailureEvent(BarcodeFailureEvent arg0) {
-
+    public void onTriggerEvent(TriggerStateChangeEvent triggerStateChangeEvent) {
 
     }
+
 
     @Override
     public void onResume() {
@@ -147,7 +160,7 @@ public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.
                 barcodeReader.claim();
             } catch (ScannerUnavailableException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Scanner unavailable", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Scanner unavailable", Toast.LENGTH_SHORT).show();
             }
         }
 
