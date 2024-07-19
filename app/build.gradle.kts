@@ -23,7 +23,7 @@ android {
         create("release") {
             keyAlias = "key0"
             keyPassword = "abc123"
-            storeFile = file("C:/Users/talhashahid/Downloads/ScannerChecker/abc.jks")
+            storeFile = file("Users/talhashahid/Downloads/ScannerChecker/abc.jks")
             storePassword = "abc123"
         }
     }
