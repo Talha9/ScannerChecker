@@ -42,7 +42,7 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
         }
 
         // get bar code instance from MainActivity
-        barcodeReader = MainActivity.getBarcodeObject();
+        barcodeReader = SplashActivity.getBarcodeObject();
 
         if (barcodeReader != null) {
 
@@ -52,7 +52,7 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
             // set the trigger mode to client control
             try {
                barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                       BarcodeReader.TRIGGER_CONTROL_MODE_CLIENT_CONTROL);
+                       BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
 
             } catch (UnsupportedPropertyException e) {
                 Toast.makeText(this, "Failed to apply properties", Toast.LENGTH_SHORT).show();
@@ -89,8 +89,8 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
                     // only handle trigger presses
                     // turn on/off aimer, illumination and decoding
 
-                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                            BarcodeReader.TRIGGER_CONTROL_MODE_DISABLE);
+                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_ENABLE,
+                          false);
 
                     barcodeReader.aim(false);
                     barcodeReader.light(false);
@@ -111,8 +111,8 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
                 try {
                     // only handle trigger presses
                     // turn on/off aimer, illumination and decoding
-                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_CONTROL_MODE,
-                            BarcodeReader.TRIGGER_CONTROL_MODE_AUTO_CONTROL);
+                    barcodeReader.setProperty(BarcodeReader.PROPERTY_TRIGGER_ENABLE,
+                            true);
                     barcodeReader.aim(true);
                     barcodeReader.light(true);
                     barcodeReader.decode(true);
