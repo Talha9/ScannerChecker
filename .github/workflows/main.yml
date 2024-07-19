@@ -32,7 +32,7 @@ jobs:
 
       - name: Build apk release project (APK) - ${{ env.main_project_module }} module
         run: |
-          ./gradlew assembleRelease -Pandroid.injected.signing.store.file=abc.jks \
+          ./gradlew assembleRelease -Pandroid.injected.signing.store.file=app/abc.jks \
                                      -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
                                      -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
                                      -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
