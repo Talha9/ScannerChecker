@@ -10,8 +10,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set current date as env variable
         run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
       - name: Set repository name as env variable
         run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
 
@@ -24,19 +26,25 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assembleDebug
-      - name: Ensure Folder Structure
-        run: mkdir -p build/outputs/apk/debug/
+      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
+        run: |
+          ./gradlew assembleRelease -Pandroid.injected.signing.store.file=app/abc.jks \
+                                     -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+                                     -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+                                     -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK Debug - ${{ env.repository_name }}
+      - name: Ensure Folder Structure
+        run: mkdir -p build/outputs/apk/release/
+
+      - name: Upload APK Release - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/
+          name: release-apk
+          path: app/build/outputs/apk/release/
 
       - name: Notify Teams Channel
         if: success()
