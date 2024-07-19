@@ -82,6 +82,7 @@ public class AutomaticBarcodeFragment extends Fragment implements BarcodeReader.
             properties.put(BarcodeReader.PROPERTY_GS1_128_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_QR_CODE_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_CODE_39_ENABLED, true);
+            properties.put(BarcodeReader.PROPERTY_CODE_39_FULL_ASCII_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_DATAMATRIX_ENABLED, true);
             properties.put(BarcodeReader.PROPERTY_UPC_A_ENABLE, true);
             properties.put(BarcodeReader.PROPERTY_EAN_13_ENABLED, false);
@@ -90,7 +91,7 @@ public class AutomaticBarcodeFragment extends Fragment implements BarcodeReader.
             properties.put(BarcodeReader.PROPERTY_INTERLEAVED_25_ENABLED, false);
             properties.put(BarcodeReader.PROPERTY_PDF_417_ENABLED, false);
             // Set Max Code 39 barcode length
-            properties.put(BarcodeReader.PROPERTY_CODE_39_MAXIMUM_LENGTH, 10);
+            properties.put(BarcodeReader.PROPERTY_CODE_39_MAXIMUM_LENGTH, 36);
             // Turn on center decoding
             properties.put(BarcodeReader.PROPERTY_CENTER_DECODE, true);
             // Enable bad read response

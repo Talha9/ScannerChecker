@@ -16,9 +16,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.content.pm.ActivityInfo;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.honeywell.aidc.*;
 
-public class AutomaticBarcodeActivity extends Activity implements BarcodeReader.BarcodeListener,
+public class AutomaticBarcodeActivity extends AppCompatActivity implements BarcodeReader.BarcodeListener,
         BarcodeReader.TriggerListener {
 
     private BarcodeReader barcodeReader;
