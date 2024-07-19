@@ -19,14 +19,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-   /* signingConfigs {
+    signingConfigs {
         create("release") {
-            keyAlias = "key0"
-            keyPassword = "abc123"
-            storeFile = file("Users/talhashahid/Downloads/ScannerChecker/abc.jks")
-            storePassword = "abc123"
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+            storeFile = file("app/abc.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
         }
-    }*/
+    }
 
     buildTypes {
         release {
