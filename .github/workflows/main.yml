@@ -27,16 +27,16 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assembleDebug
+      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
+        run: ./gradlew assembleRelease
       - name: Ensure Folder Structure
-        run: mkdir -p build/outputs/apk/debug/
+        run: mkdir -p build/outputs/apk/release/
 
-      - name: Upload APK Debug - ${{ env.repository_name }}
+      - name: Upload APK Release - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/
+          name: release-apk
+          path: app/build/outputs/apk/release/
 
       - name: Notify Teams Channel
         if: success()
