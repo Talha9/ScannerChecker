@@ -19,6 +19,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "key0"
+            keyPassword = "abc123"
+            storeFile = file("C:/Users/talhashahid/Downloads/ScannerChecker/abc.jks")
+            storePassword = "abc123"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
